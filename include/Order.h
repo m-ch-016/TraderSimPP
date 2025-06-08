@@ -30,6 +30,8 @@ public:
     std::uint64_t getPrice() const noexcept;
     std::uint64_t getQuantity() const noexcept;
     std::chrono::steady_clock::time_point getTimestamp() const noexcept;
+
+    void setQuantity(std::uint64_t quantity) noexcept;
 };
 
 
