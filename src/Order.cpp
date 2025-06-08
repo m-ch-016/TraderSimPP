@@ -42,6 +42,3 @@ std::chrono::steady_clock::time_point Order::getTimestamp() const
 {
     return m_timestamp;
 }
-
-
-
