@@ -18,27 +18,27 @@ Order::Order(Side side, std::uint64_t price, std::uint64_t quantity)
         }
     }
 
-std::uint64_t Order::getOrderId() const
+std::uint64_t Order::getOrderId() const noexcept
 {
     return m_order_id;
 }
 
-Side Order::getSide() const
+Side Order::getSide() const noexcept
 {
     return m_side;
 }
 
-std::uint64_t Order::getPrice() const
+std::uint64_t Order::getPrice() const noexcept
 {
     return m_price;
 }
 
-std::uint64_t Order::getQuantity() const
+std::uint64_t Order::getQuantity() const noexcept
 {
     return m_quantity;
 }
 
-std::chrono::steady_clock::time_point Order::getTimestamp() const
+std::chrono::steady_clock::time_point Order::getTimestamp() const noexcept
 {
     return m_timestamp;
 }
