@@ -101,3 +101,15 @@ TEST(OrderBookTest, ValidBestBuy)
 
     EXPECT_EQ(book.getBestBuy()->getOrderId(), buy_order.getOrderId());
 }
+
+TEST(OrderBookTest, ValidBestSell)
+{
+    OrderBook book;
+
+    ASSERT_EQ(book.getBestSell(), nullptr);
+
+    Order sell_order(Side::SELL, 123, 123);
+    book.addOrder(sell_order);
+
+    EXPECT_EQ(book.getBestSell()->getOrderId(), sell_order.getOrderId());
+}
