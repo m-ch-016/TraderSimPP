@@ -112,3 +112,17 @@ void OrderBook::cancelOrder(std::uint64_t orderID)
 
     removeOrder(sellOrders);
 }
+
+const Order* OrderBook::getBestBuy() const
+{
+    if (!buyOrders.empty())
+    {
+        const auto& highest_queue = buyOrders.rbegin()->second;
+        if (!highest_queue.empty())
+        {
+            return &highest_queue.front();
+        }
+    }
+
+    return nullptr;
+}
