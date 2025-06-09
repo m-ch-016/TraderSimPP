@@ -126,3 +126,17 @@ const Order* OrderBook::getBestBuy() const
 
     return nullptr;
 }
+
+const Order* OrderBook::getBestSell() const
+{
+    if (!sellOrders.empty())
+    {
+        const auto& lowest_queue = sellOrders.begin()->second;
+        if (!lowest_queue.empty())
+        {
+            return &lowest_queue.front();
+        }
+    }
+
+    return nullptr;
+}
