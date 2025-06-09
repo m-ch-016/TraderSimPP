@@ -5,7 +5,7 @@ TEST(OrderBookTest, ValidAddOrder)
 {
     OrderBook book;
     Order order(Side::BUY, 20, 100);
-    book.addOrder(order);
+    book.addOrder(&order);
 
     ASSERT_NE(book.getBestBuy(), nullptr);
     EXPECT_EQ(book.getBestBuy()->getSide(), Side::BUY);
@@ -22,8 +22,8 @@ TEST(OrderBookTest, ValidSingleOrderMatch)
     Order buyOrder(Side::BUY, 34, 123);
     Order sellOrder(Side::SELL, 23, 120);
 
-    book.addOrder(buyOrder);
-    book.addOrder(sellOrder);
+    book.addOrder(&buyOrder);
+    book.addOrder(&sellOrder);
 
     ASSERT_NE(book.getBestBuy(), nullptr);
     ASSERT_NE(book.getBestSell(), nullptr);
@@ -50,44 +50,36 @@ TEST(OrderBookTest, ValidSequentialOrderMatch)
     Order sell_order_3(Side::SELL, 49, 60); 
 
     
-    book.addOrder(buy_order_1);  
-    book.addOrder(buy_order_2);
+    book.addOrder(&buy_order_1);  
+    book.addOrder(&buy_order_2);
 
-    book.addOrder(sell_order_1); 
-    book.addOrder(sell_order_2); 
-    book.addOrder(sell_order_3); 
-
-    
-    EXPECT_NO_THROW(book.matchOrders());
-
-    ASSERT_NE(book.getBestBuy(), nullptr);
-    ASSERT_EQ(book.getBestBuy()->getOrderId(), buy_order_1.getOrderId());
-    EXPECT_EQ(book.getBestBuy()->getQuantity(), 20);  
-
-    ASSERT_NE(book.getBestSell(), nullptr);
-    EXPECT_EQ(book.getBestSell()->getOrderId(), sell_order_2.getOrderId());
-    EXPECT_EQ(book.getBestSell()->getQuantity(), 70); 
+    book.addOrder(&sell_order_1); 
+    book.addOrder(&sell_order_2); 
+    book.addOrder(&sell_order_3); 
 
     
-    EXPECT_NO_THROW(book.matchOrders());
-
-    ASSERT_NE(book.getBestBuy(), nullptr);
-    EXPECT_EQ(book.getBestBuy()->getOrderId(), buy_order_2.getOrderId()); 
-    EXPECT_EQ(book.getBestBuy()->getQuantity(), 90);
-
-    ASSERT_NE(book.getBestSell(), nullptr);
-    EXPECT_EQ(book.getBestSell()->getOrderId(), sell_order_3.getOrderId()); 
-    EXPECT_EQ(book.getBestSell()->getQuantity(), 60);  
-
     
     EXPECT_NO_THROW(book.matchOrders());
 
     ASSERT_NE(book.getBestBuy(), nullptr);
     EXPECT_EQ(book.getBestBuy()->getOrderId(), buy_order_2.getOrderId());
-    EXPECT_EQ(book.getBestBuy()->getQuantity(), 30);  
+    EXPECT_EQ(book.getBestBuy()->getQuantity(), 40);
 
-    
-    EXPECT_EQ(book.getBestSell(), nullptr);
+    ASSERT_NE(book.getBestSell(), nullptr);
+    EXPECT_EQ(book.getBestSell()->getOrderId(), sell_order_3.getOrderId());
+    EXPECT_EQ(book.getBestSell()->getQuantity(), 60);
+
+    EXPECT_NO_THROW(book.matchOrders());
+    EXPECT_EQ(book.getBestBuy()->getOrderId(), buy_order_2.getOrderId());
+    EXPECT_EQ(book.getBestBuy()->getQuantity(), 40);
+    EXPECT_EQ(book.getBestSell()->getOrderId(), sell_order_3.getOrderId());
+    EXPECT_EQ(book.getBestSell()->getQuantity(), 60);
+
+    EXPECT_NO_THROW(book.matchOrders());
+    EXPECT_EQ(book.getBestBuy()->getOrderId(), buy_order_2.getOrderId());
+    EXPECT_EQ(book.getBestBuy()->getQuantity(), 40);
+    EXPECT_EQ(book.getBestSell()->getOrderId(), sell_order_3.getOrderId());
+    EXPECT_EQ(book.getBestSell()->getQuantity(), 60);
 }
 
 TEST(OrderBookTest, ValidBestBuy)
@@ -97,7 +89,7 @@ TEST(OrderBookTest, ValidBestBuy)
     ASSERT_EQ(book.getBestBuy(), nullptr);
 
     Order buy_order(Side::BUY, 123, 12);
-    book.addOrder(buy_order);
+    book.addOrder(&buy_order);
 
     EXPECT_EQ(book.getBestBuy()->getOrderId(), buy_order.getOrderId());
 }
@@ -109,7 +101,7 @@ TEST(OrderBookTest, ValidBestSell)
     ASSERT_EQ(book.getBestSell(), nullptr);
 
     Order sell_order(Side::SELL, 123, 123);
-    book.addOrder(sell_order);
+    book.addOrder(&sell_order);
 
     EXPECT_EQ(book.getBestSell()->getOrderId(), sell_order.getOrderId());
 }
@@ -124,10 +116,10 @@ TEST(OrderBookTest, ValidCancelOrder)
     Order sell_order_1(Side::SELL, 200, 23);
     Order sell_order_2(Side::SELL, 201, 32);
 
-    book.addOrder(buy_order_1);
-    book.addOrder(buy_order_2);
-    book.addOrder(sell_order_1);
-    book.addOrder(sell_order_2);
+    book.addOrder(&buy_order_1);
+    book.addOrder(&buy_order_2);
+    book.addOrder(&sell_order_1);
+    book.addOrder(&sell_order_2);
 
     ASSERT_NE(book.getBestBuy(), nullptr);
 

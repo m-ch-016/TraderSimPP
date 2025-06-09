@@ -10,11 +10,11 @@ class OrderBook
 private:
     using price = std::uint64_t;
 
-    std::map<price, std::queue<Order>> buyOrders;
-    std::map<price, std::queue<Order>> sellOrders;
+    std::map<price, std::queue<Order*>> buyOrders;
+    std::map<price, std::queue<Order*>> sellOrders;
     
 public:
-    void addOrder(const Order &order);
+    void addOrder(Order* order);
     void matchOrders();
     void cancelOrder(std::uint64_t orderID);
     const Order* getBestBuy() const;
