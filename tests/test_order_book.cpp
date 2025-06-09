@@ -89,3 +89,15 @@ TEST(OrderBookTest, ValidSequentialOrderMatch)
     
     EXPECT_EQ(book.getBestSell(), nullptr);
 }
+
+TEST(OrderBookTest, ValidBestBuy)
+{
+    OrderBook book;
+
+    ASSERT_EQ(book.getBestBuy(), nullptr);
+
+    Order buy_order(Side::BUY, 123, 12);
+    book.addOrder(buy_order);
+
+    EXPECT_EQ(book.getBestBuy()->getOrderId(), buy_order.getOrderId());
+}
