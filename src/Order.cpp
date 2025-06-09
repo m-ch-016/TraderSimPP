@@ -43,7 +43,7 @@ std::chrono::steady_clock::time_point Order::getTimestamp() const noexcept
     return m_timestamp;
 }
 
-void Order::setQuantity(std::uint64_t quantity)
+void Order::setQuantity(std::uint64_t quantity) noexcept
 {
     m_quantity = quantity;
 }
