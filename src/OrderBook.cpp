@@ -61,3 +61,54 @@ void OrderBook::matchOrders()
             lowest_sell_queue.pop();
     }
 }
+
+void OrderBook::cancelOrder(std::uint64_t orderID)
+{
+    auto removeOrder = [&](std::map<std::uint64_t, std::queue<Order>>& order_map)
+    {
+        for (auto i = order_map.begin(); i != order_map.end();)
+        {
+            std::queue<Order>& current_queue = i->second;
+            std::queue<Order> temp_queue;
+
+            bool found = false;
+            
+            while (!current_queue.empty())
+            {
+                Order order = current_queue.front();
+                current_queue.pop();
+    
+                if(order.getOrderId() == orderID)
+                {
+                    found = true;
+                    continue;
+                }
+    
+                temp_queue.push(order);
+            }
+    
+            current_queue = temp_queue;
+    
+            if (current_queue.empty())
+            {
+                i = order_map.erase(i);
+            } else {
+                ++i;
+            }
+
+            if (found) 
+            {
+                return true;
+            }
+        }
+
+        return false;
+    };
+
+    if (removeOrder(buyOrders))
+    {
+        return;
+    }
+
+    removeOrder(sellOrders);
+}
