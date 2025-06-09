@@ -15,7 +15,7 @@ TEST(OrderBookTest, ValidAddOrder)
 }
 
 
-TEST(OrderBookTest, ValidOrderMatch)
+TEST(OrderBookTest, ValidSingleOrderMatch)
 {
     OrderBook book;
 
@@ -33,5 +33,59 @@ TEST(OrderBookTest, ValidOrderMatch)
     EXPECT_NE(book.getBestBuy(), nullptr);
     EXPECT_EQ(book.getBestBuy()->getQuantity(), 3);
 
+    EXPECT_EQ(book.getBestSell(), nullptr);
+}
+
+
+TEST(OrderBookTest, ValidSequentialOrderMatch)
+{
+    OrderBook book;
+
+    Order buy_order_1(Side::BUY, 50, 100);  
+    Order buy_order_2(Side::BUY, 48, 90);   
+
+    
+    Order sell_order_1(Side::SELL, 45, 80); 
+    Order sell_order_2(Side::SELL, 47, 70); 
+    Order sell_order_3(Side::SELL, 49, 60); 
+
+    
+    book.addOrder(buy_order_1);  
+    book.addOrder(buy_order_2);
+
+    book.addOrder(sell_order_1); 
+    book.addOrder(sell_order_2); 
+    book.addOrder(sell_order_3); 
+
+    
+    EXPECT_NO_THROW(book.matchOrders());
+
+    ASSERT_NE(book.getBestBuy(), nullptr);
+    ASSERT_EQ(book.getBestBuy()->getOrderId(), buy_order_1.getOrderId());
+    EXPECT_EQ(book.getBestBuy()->getQuantity(), 20);  
+
+    ASSERT_NE(book.getBestSell(), nullptr);
+    EXPECT_EQ(book.getBestSell()->getOrderId(), sell_order_2.getOrderId());
+    EXPECT_EQ(book.getBestSell()->getQuantity(), 70); 
+
+    
+    EXPECT_NO_THROW(book.matchOrders());
+
+    ASSERT_NE(book.getBestBuy(), nullptr);
+    EXPECT_EQ(book.getBestBuy()->getOrderId(), buy_order_2.getOrderId()); 
+    EXPECT_EQ(book.getBestBuy()->getQuantity(), 90);
+
+    ASSERT_NE(book.getBestSell(), nullptr);
+    EXPECT_EQ(book.getBestSell()->getOrderId(), sell_order_3.getOrderId()); 
+    EXPECT_EQ(book.getBestSell()->getQuantity(), 60);  
+
+    
+    EXPECT_NO_THROW(book.matchOrders());
+
+    ASSERT_NE(book.getBestBuy(), nullptr);
+    EXPECT_EQ(book.getBestBuy()->getOrderId(), buy_order_2.getOrderId());
+    EXPECT_EQ(book.getBestBuy()->getQuantity(), 30);  
+
+    
     EXPECT_EQ(book.getBestSell(), nullptr);
 }
