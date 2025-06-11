@@ -20,7 +20,7 @@ private:
     Side m_side;
     std::uint64_t m_price;
     std::uint64_t m_quantity;
-    std::chrono::steady_clock::time_point m_timestamp;
+    std::chrono::system_clock::time_point m_timestamp;
 
 public:
     Order(Side side, std::uint64_t price, std::uint64_t quantity);
@@ -29,7 +29,7 @@ public:
     Side getSide() const noexcept;
     std::uint64_t getPrice() const noexcept;
     std::uint64_t getQuantity() const noexcept;
-    std::chrono::steady_clock::time_point getTimestamp() const noexcept;
+    std::chrono::system_clock::time_point getTimestamp() const noexcept;
 
     void setQuantity(std::uint64_t quantity) noexcept;
 };
