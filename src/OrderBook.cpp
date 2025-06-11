@@ -1,17 +1,17 @@
 #include "OrderBook.h"
 #include <queue>
 
-void OrderBook::addOrder(Order* order)
+void OrderBook::addOrder(std::unique_ptr<Order> order)
 {
     Side order_side = order->getSide();
     std::uint64_t order_price = order->getPrice();
 
     if (order_side == Side::BUY)
     {
-       buyOrders[order_price].push(order);
+       buyOrders[order_price].push(std::move(order));
     
     } else {
-       sellOrders[order_price].push(order);
+       sellOrders[order_price].push(std::move(order));
     }
 }
 
@@ -45,8 +45,8 @@ std::vector<Trade> OrderBook::matchOrders()
         auto& highest_buy_queue = buy_iterator->second;
         auto& lowest_sell_queue = sell_iterator->second;
 
-        Order* highest_buy = highest_buy_queue.front();
-        Order* lowest_sell = lowest_sell_queue.front();
+        const auto& highest_buy = highest_buy_queue.front();
+        const auto& lowest_sell = lowest_sell_queue.front();
 
         if (highest_buy->getPrice() < lowest_sell->getPrice())
             break;
@@ -55,6 +55,7 @@ std::vector<Trade> OrderBook::matchOrders()
 
         trades.push_back(
             Trade {
+                (highest_buy->getTimestamp() > lowest_sell->getTimestamp()) ? highest_buy->getTimestamp() : lowest_sell->getTimestamp(),
                 highest_buy->getOrderId(),
                 lowest_sell->getOrderId(),
                 lowest_sell->getPrice(),
@@ -89,31 +90,31 @@ std::vector<Trade> OrderBook::matchOrders()
 
 void OrderBook::cancelOrder(std::uint64_t orderID)
 {
-    auto removeOrder = [&](std::map<std::uint64_t, std::queue<Order*>>& order_map)
+    auto removeOrder = [&](std::map<std::uint64_t, std::queue<std::unique_ptr<Order>>>& order_map)
     {
         for (auto i = order_map.begin(); i != order_map.end();)
         {
-            std::queue<Order*>& current_queue = i->second;
-            std::queue<Order*> temp_queue;
+            std::queue<std::unique_ptr<Order>>& current_queue = i->second;
+            std::queue<std::unique_ptr<Order>> temp_queue;
 
             bool found = false;
             
             while (!current_queue.empty())
             {
-                Order* order = current_queue.front();
+                auto& order_ptr = current_queue.front();
                 current_queue.pop();
     
-                if(order->getOrderId() == orderID)
+                if(order_ptr->getOrderId() == orderID)
                 {
                     found = true;
                     continue;
                 }
     
-                temp_queue.push(order);
+                temp_queue.push(std::move(order_ptr));
             }
     
-            current_queue = temp_queue;
-    
+            std::swap(current_queue, temp_queue);
+            
             if (current_queue.empty())
             {
                 i = order_map.erase(i);
@@ -144,7 +145,7 @@ const Order* OrderBook::getBestBuy() const
     {
         if (!it->second.empty())
         {
-            return it->second.front();
+            return it->second.front().get();
         }
     }
 
@@ -157,7 +158,7 @@ const Order* OrderBook::getBestSell() const
     {
         if (!it->second.empty())
         {
-            return it->second.front();
+            return it->second.front().get();
         }
     }
 
