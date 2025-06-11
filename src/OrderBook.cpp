@@ -57,7 +57,7 @@ void OrderBook::matchOrders()
         if (highest_buy->getQuantity() == 0)
         {
             highest_buy_queue.pop();
-            if (!highest_buy_queue.empty())
+            if (highest_buy_queue.empty())
             {
                 buyOrders.erase(buy_iterator->first);
             }
@@ -66,7 +66,7 @@ void OrderBook::matchOrders()
         if (lowest_sell->getQuantity() == 0)
         {
             lowest_sell_queue.pop();
-            if (!lowest_sell_queue.empty())
+            if (lowest_sell_queue.empty())
             {
                 sellOrders.erase(sell_iterator->first);
             }
