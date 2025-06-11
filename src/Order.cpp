@@ -10,7 +10,7 @@ Order::Order(Side side, std::uint64_t price, std::uint64_t quantity)
     , m_side(side)
     , m_price(price)
     , m_quantity(quantity)
-    , m_timestamp(std::chrono::steady_clock::now())
+    , m_timestamp(std::chrono::system_clock::now())
     {
         if (quantity == 0 || price == 0)
         {
@@ -38,7 +38,7 @@ std::uint64_t Order::getQuantity() const noexcept
     return m_quantity;
 }
 
-std::chrono::steady_clock::time_point Order::getTimestamp() const noexcept
+std::chrono::system_clock::time_point Order::getTimestamp() const noexcept
 {
     return m_timestamp;
 }
