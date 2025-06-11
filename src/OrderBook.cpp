@@ -16,10 +16,12 @@ void OrderBook::addOrder(Order* order)
 }
 
 
-void OrderBook::matchOrders()
+std::vector<Trade> OrderBook::matchOrders()
 {
+    std::vector<Trade> trades;
+
     if (buyOrders.empty() || sellOrders.empty())
-        return;
+        return trades;
 
     while (true)
     {
@@ -51,6 +53,15 @@ void OrderBook::matchOrders()
 
         std::uint64_t minimum_quantity = std::min(highest_buy->getQuantity(), lowest_sell->getQuantity());
 
+        trades.push_back(
+            Trade {
+                highest_buy->getOrderId(),
+                lowest_sell->getOrderId(),
+                lowest_sell->getPrice(),
+                minimum_quantity,
+            }
+        );
+
         highest_buy->setQuantity(highest_buy->getQuantity() - minimum_quantity);
         lowest_sell->setQuantity(lowest_sell->getQuantity() - minimum_quantity);
 
@@ -72,6 +83,8 @@ void OrderBook::matchOrders()
             }
         }
     }
+    
+    return trades;
 }
 
 void OrderBook::cancelOrder(std::uint64_t orderID)
