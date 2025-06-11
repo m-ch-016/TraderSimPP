@@ -4,6 +4,7 @@
 #include <queue>
 #include <map>
 #include "Order.h"
+#include "Trade.h"
 
 class OrderBook
 {
@@ -15,7 +16,7 @@ private:
     
 public:
     void addOrder(Order* order);
-    void matchOrders();
+    std::vector<Trade> matchOrders();
     void cancelOrder(std::uint64_t orderID);
     const Order* getBestBuy() const;
     const Order* getBestSell() const;
