@@ -1,4 +1,4 @@
-# TradeSim++
+# TraderSim++
 
 **High-Frequency Trading Simulator**
 
@@ -6,7 +6,7 @@
 
 ## Overview
 
-**TradeSim++** is a high-frequency trading (HFT) simulator designed to replicate a realistic market environment. It provides a sophisticated order book and matching engine that enables testing and prototyping of algorithmic trading strategies with real-time order matching, latency modeling, and profit & loss (PnL) tracking.
+**TraderSim++** is a high-frequency trading (HFT) simulator designed to replicate a realistic market environment. It provides a sophisticated order book and matching engine that enables testing and prototyping of algorithmic trading strategies with real-time order matching, latency modeling, and profit & loss (PnL) tracking.
 
 ---
 
@@ -21,9 +21,9 @@
 
 ---
 
-## Why Use TradeSim++
+## Why Use TraderSim++
 
-Algorithmic trading strategy testing is often either too simplistic or requires expensive market data and infrastructure. TradeSim++ offers a risk-free, cost-effective platform to prototype and validate strategies under pseudo-realistic market conditions.
+Algorithmic trading strategy testing is often either too simplistic or requires expensive market data and infrastructure. TraderSim++ offers a risk-free, cost-effective platform to prototype and validate strategies under pseudo-realistic market conditions.
 
 ---
 
@@ -55,8 +55,8 @@ Algorithmic trading strategy testing is often either too simplistic or requires 
 ### Building
 
 ```bash
-git clone https://github.com/yourusername/TradeSimPP.git
-cd TradeSimPP
+git clone https://github.com/yourusername/TraderSimPP.git
+cd TraderSimPP
 mkdir build && cd build
 cmake ..
 make
