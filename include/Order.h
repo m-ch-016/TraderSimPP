@@ -23,7 +23,7 @@ private:
     std::chrono::system_clock::time_point m_timestamp;
 
 public:
-    Order(Side side, std::uint64_t price, std::uint64_t quantity);
+    Order(Side side, std::uint64_t price, std::uint64_t quantity, std::chrono::system_clock::time_point timestamp);
     
     std::uint64_t getOrderId() const noexcept;
     Side getSide() const noexcept;

@@ -5,12 +5,12 @@
 std::atomic<std::uint64_t> Order::m_global_counter_id{0};
 
 
-Order::Order(Side side, std::uint64_t price, std::uint64_t quantity)
+Order::Order(Side side, std::uint64_t price, std::uint64_t quantity, std::chrono::system_clock::time_point timestamp)
     : m_order_id(++m_global_counter_id)
     , m_side(side)
     , m_price(price)
     , m_quantity(quantity)
-    , m_timestamp(std::chrono::system_clock::now())
+    , m_timestamp(timestamp)
     {
         if (quantity == 0 || price == 0)
         {
