@@ -1,10 +1,17 @@
 #include <gtest/gtest.h>
 #include "OrderBook.h"
+#include <chrono>
+
+static std::uint64_t currentTimestamp()
+{
+    return static_cast<std::uint64_t>(
+        std::chrono::steady_clock::now().time_since_epoch().count());
+}
 
 TEST(OrderBookTest, ValidAddOrder)
 {
     OrderBook book;
-    std::unique_ptr<Order> order = std::make_unique<Order>(Side::BUY, 20, 100);
+    auto order = std::make_unique<Order>(Side::BUY, 20, 100.0, currentTimestamp());
     book.addOrder(std::move(order));
 
     ASSERT_NE(book.getBestBuy(), nullptr);
@@ -14,13 +21,12 @@ TEST(OrderBookTest, ValidAddOrder)
     EXPECT_GT(book.getBestBuy()->getOrderId(), 0);
 }
 
-
 TEST(OrderBookTest, ValidSingleOrderMatch)
 {
     OrderBook book;
 
-    std::unique_ptr<Order> buyOrder = std::make_unique<Order>(Side::BUY, 34, 123);
-    std::unique_ptr<Order> sellOrder = std::make_unique<Order>(Side::SELL, 23, 120);
+    auto buyOrder = std::make_unique<Order>(Side::BUY, 34, 123.0, currentTimestamp());
+    auto sellOrder = std::make_unique<Order>(Side::SELL, 23, 120.0, currentTimestamp());
 
     book.addOrder(std::move(buyOrder));
     book.addOrder(std::move(sellOrder));
@@ -36,35 +42,31 @@ TEST(OrderBookTest, ValidSingleOrderMatch)
     EXPECT_EQ(book.getBestSell(), nullptr);
 }
 
-
 TEST(OrderBookTest, ValidSequentialOrderMatch)
 {
     OrderBook book;
 
-    std::unique_ptr<Order> buy_order_1 = std::make_unique<Order>(Side::BUY, 50, 100);  
-    std::unique_ptr<Order> buy_order_2 = std::make_unique<Order>(Side::BUY, 48, 90);   
-    
-    
-    std::unique_ptr<Order> sell_order_1 = std::make_unique<Order>(Side::SELL, 45, 80);
-    std::unique_ptr<Order> sell_order_2 = std::make_unique<Order>(Side::SELL, 47, 70); 
-    std::unique_ptr<Order> sell_order_3 = std::make_unique<Order>(Side::SELL, 49, 60); 
-    
+    auto buy_order_1 = std::make_unique<Order>(Side::BUY, 50, 100.0, currentTimestamp());
+    auto buy_order_2 = std::make_unique<Order>(Side::BUY, 48, 90.0, currentTimestamp());
+
+    auto sell_order_1 = std::make_unique<Order>(Side::SELL, 45, 80.0, currentTimestamp());
+    auto sell_order_2 = std::make_unique<Order>(Side::SELL, 47, 70.0, currentTimestamp());
+    auto sell_order_3 = std::make_unique<Order>(Side::SELL, 49, 60.0, currentTimestamp());
+
     auto buy_1_id = buy_order_1->getOrderId();
     auto buy_2_id = buy_order_2->getOrderId();
-    
-    book.addOrder(std::move(buy_order_1));  
+
+    book.addOrder(std::move(buy_order_1));
     book.addOrder(std::move(buy_order_2));
-    
+
     auto sell_1_id = sell_order_1->getOrderId();
     auto sell_2_id = sell_order_2->getOrderId();
     auto sell_3_id = sell_order_3->getOrderId();
 
-    book.addOrder(std::move(sell_order_1)); 
-    book.addOrder(std::move(sell_order_2)); 
-    book.addOrder(std::move(sell_order_3)); 
+    book.addOrder(std::move(sell_order_1));
+    book.addOrder(std::move(sell_order_2));
+    book.addOrder(std::move(sell_order_3));
 
-    
-    
     EXPECT_NO_THROW(book.matchOrders());
 
     ASSERT_NE(book.getBestBuy(), nullptr);
@@ -94,9 +96,9 @@ TEST(OrderBookTest, ValidBestBuy)
 
     ASSERT_EQ(book.getBestBuy(), nullptr);
 
-    std::unique_ptr buy_order = std::make_unique<Order>(Side::BUY, 123, 12);
+    auto buy_order = std::make_unique<Order>(Side::BUY, 123, 12.0, currentTimestamp());
     auto buy_id = buy_order->getOrderId();
-    
+
     book.addOrder(std::move(buy_order));
 
     EXPECT_EQ(book.getBestBuy()->getOrderId(), buy_id);
@@ -108,9 +110,9 @@ TEST(OrderBookTest, ValidBestSell)
 
     ASSERT_EQ(book.getBestSell(), nullptr);
 
-    std::unique_ptr sell_order = std::make_unique<Order>(Side::SELL, 123, 123);
+    auto sell_order = std::make_unique<Order>(Side::SELL, 123, 123.0, currentTimestamp());
     auto sell_id = sell_order->getOrderId();
-    
+
     book.addOrder(std::move(sell_order));
 
     EXPECT_EQ(book.getBestSell()->getOrderId(), sell_id);
@@ -120,18 +122,17 @@ TEST(OrderBookTest, ValidCancelOrder)
 {
     OrderBook book;
 
-    std::unique_ptr buy_order_1 = std::make_unique<Order>(Side::BUY, 100, 12);
-    std::unique_ptr buy_order_2 = std::make_unique<Order>(Side::BUY, 90, 23);
+    auto buy_order_1 = std::make_unique<Order>(Side::BUY, 100, 12.0, currentTimestamp());
+    auto buy_order_2 = std::make_unique<Order>(Side::BUY, 90, 23.0, currentTimestamp());
 
-    std::unique_ptr sell_order_1 = std::make_unique<Order>(Side::SELL, 200, 23);
-    std::unique_ptr sell_order_2 = std::make_unique<Order>(Side::SELL, 201, 32);
+    auto sell_order_1 = std::make_unique<Order>(Side::SELL, 200, 23.0, currentTimestamp());
+    auto sell_order_2 = std::make_unique<Order>(Side::SELL, 201, 32.0, currentTimestamp());
 
     auto buy_1_id = buy_order_1->getOrderId();
     auto buy_2_id = buy_order_2->getOrderId();
 
     auto sell_1_id = sell_order_1->getOrderId();
     auto sell_2_id = sell_order_2->getOrderId();
-    
 
     book.addOrder(std::move(buy_order_1));
     book.addOrder(std::move(buy_order_2));
