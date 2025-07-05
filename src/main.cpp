@@ -1,5 +1,8 @@
 #include "Order.h"
 #include "OrderBook.h"
+#include "EventEngine.h"
+#include "MeanReversionStrategy.h"
+
 #include <fstream>
 #include <string>
 #include <sstream>
@@ -11,9 +14,10 @@
 
 int main()
 {
-    std::cout << "CWD: " << std::filesystem::current_path() << '\n';
-
     OrderBook book;
+    MeanReversionStrategy strategy(5, 3, 10.0);
+    EventEngine engine(book, strategy);
+
     std::ifstream file("data/orders.csv");
 
     if (!file.is_open())
@@ -25,45 +29,37 @@ int main()
     std::string line;
     std::getline(file, line);
 
+    uint64_t timestamp = 1;
+
     while (std::getline(file, line))
     {
-        std::vector<std::string> fields;
-        std::string field;
-        std::stringstream lineStream(line);
+        std::stringstream ss(line);
+        std::string sideStr, priceStr, quantityStr;
 
-        while (std::getline(lineStream, field, ','))
+        if (!std::getline(ss, sideStr, ',') ||
+            !std::getline(ss, priceStr, ',') ||
+            !std::getline(ss, quantityStr, ','))
         {
-            fields.push_back(field);
+            std::cerr << "Malformed line: " << line << '\n';
+            continue;
         }
-        
-        Side order_side;
-        if (fields[0] == "BUY")
-        {
-            order_side = Side::BUY;   
-        } else {
-            order_side = Side::SELL;
-        }
-        
-        std::unique_ptr<Order> new_order = std::make_unique<Order>(order_side, std::stoull(fields[1]), std::stoull(fields[2]));
-        book.addOrder(std::move(new_order));
-        
-        std::cout << "\nAdded order: " << (order_side == Side::BUY ? "BUY" : "SELL") 
-                  << " Price: " << fields[1] 
-                  << " Quantity: " << fields[2] 
-                  << "\n\n";
 
-        std::vector<Trade> results = book.matchOrders();
-        for (const auto& trade : results)
-        {
-            std::time_t time = std::chrono::system_clock::to_time_t(trade.timestamp);
+        Side side = (sideStr == "BUY") ? Side::BUY : Side::SELL;
+        uint64_t price = std::stoull(priceStr);
+        double quantity = std::stod(quantityStr);
 
-            std::string time_str = std::ctime(&time);
-            time_str.pop_back();
+        auto order = std::make_unique<Order>(side, price, quantity, timestamp);
 
-            std::cout << "Trade: Buy " << trade.quantity << " @ " << time_str << " between " << trade.buyerID << " and " << trade.sellerID << "\n";
-        }
+        auto event = std::make_unique<OrderEvent>(timestamp, std::move(order));
+        engine.addEvent(std::move(event));
+
+        ++timestamp;
     }
 
+    strategy.onStart();
 
+    engine.run();
+
+    strategy.onFinish();
 
 }
