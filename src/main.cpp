@@ -15,7 +15,7 @@
 int main()
 {
     OrderBook book;
-    MeanReversionStrategy strategy(5, 3, 10.0);
+    MeanReversionStrategy strategy(5, 10, 10.0);
     EventEngine engine(book, strategy);
 
     std::ifstream file("data/orders.csv");

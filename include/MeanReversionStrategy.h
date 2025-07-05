@@ -22,4 +22,16 @@ private:
     double m_orderSize;
     double m_position;
     double m_cash = 0.0;
+
+    double m_last_trade_price;
+
+    double m_base_epsilon;
+    size_t m_base_window_size;
+    double m_base_order_size;
+
+    double m_low_vol = 1.0;
+    double m_high_vol = 2.0;
+
+    double computeVol() const;
+    void updateParameters();
 };
