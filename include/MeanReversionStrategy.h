@@ -10,10 +10,12 @@ public:
     virtual void onTradeExecuted(const Trade& trade) override;
     virtual void onStart() override;
     virtual void onFinish() override;
+    std::vector<std::unique_ptr<Order>> extractPendingOrders();
 
 private:
     std::deque<double> m_midPrices;
     std::unordered_set<std::uint64_t> m_orderIds;
+    std::vector<std::unique_ptr<Order>> m_pendingOrders;
 
     size_t m_windowSize;
     double m_epsilon;
