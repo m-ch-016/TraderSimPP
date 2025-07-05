@@ -10,8 +10,8 @@ add_library(tradesim_lib ${SOURCES})
 target_include_directories(tradesim_lib PUBLIC include)
 
 # === Main executable ===
-# add_executable(tradesim src/main.cpp)  # replace with actual main file if different
-# target_link_libraries(tradesim tradesim_lib)
+add_executable(tradesim src/main.cpp)  # replace with actual main file if different
+target_link_libraries(tradesim tradesim_lib)
 
 # === GoogleTest ===
 enable_testing()
