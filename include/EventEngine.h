@@ -29,15 +29,15 @@ struct OrderEvent : public Event
 
 class EventEngine 
 {
-    
+
 private:
     OrderBook& m_orderBook;
     Strategy& m_strategy;
     
-    std::vector<std::unique_ptr<Event>> events;
-    uint64_t current_time;
+    std::vector<std::unique_ptr<Event>> m_events;
+    uint64_t m_current_time;
 
-    void processEvent(const Event& event);
+    void processEvent(Event& event);
 
 public:
     EventEngine(OrderBook& orderBook, Strategy& strategy);
