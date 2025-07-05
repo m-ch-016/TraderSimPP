@@ -5,7 +5,7 @@
 std::atomic<std::uint64_t> Order::m_global_counter_id{0};
 
 
-Order::Order(Side side, std::uint64_t price, std::uint64_t quantity, std::chrono::system_clock::time_point timestamp)
+Order::Order(Side side, std::uint64_t price, double quantity, std::uint64_t timestamp)
     : m_order_id(++m_global_counter_id)
     , m_side(side)
     , m_price(price)
@@ -33,17 +33,17 @@ std::uint64_t Order::getPrice() const noexcept
     return m_price;
 }
 
-std::uint64_t Order::getQuantity() const noexcept
+double Order::getQuantity() const noexcept
 {
     return m_quantity;
 }
 
-std::chrono::system_clock::time_point Order::getTimestamp() const noexcept
+std::uint64_t Order::getTimestamp() const noexcept
 {
     return m_timestamp;
 }
 
-void Order::setQuantity(std::uint64_t quantity) noexcept
+void Order::setQuantity(double quantity) noexcept
 {
     m_quantity = quantity;
 }
