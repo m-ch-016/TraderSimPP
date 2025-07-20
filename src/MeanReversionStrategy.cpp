@@ -15,8 +15,8 @@ MeanReversionStrategy::MeanReversionStrategy(double epsilon, size_t windowSize, 
       m_base_order_size(orderSize),
       m_base_window_size(windowSize),
       m_cash(0.0),
-      m_low_vol(5.0),
-      m_high_vol(15.0)
+      m_low_vol(0.2),
+      m_high_vol(0.6)
 {
     if (windowSize <= 0 || epsilon < 0 || orderSize <= 0)
     {
