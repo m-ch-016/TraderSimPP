@@ -35,28 +35,4 @@ Algorithmic trading strategy testing is often either too simplistic or requires 
 - **Event-Driven Design:** Observer pattern implementation for handling trade, order, and market data events  
 - **Strategy Backtesting:** Framework to simulate historical market scenarios and evaluate strategy performance  
 
----
 
-## Bonus Technical Stretch Goals
-
-- Implement mock FIX protocol connectivity to simulate real exchange connectivity  
-- Support multi-agent simulations with competing algorithmic traders  
-
----
-
-## Getting Started
-
-### Prerequisites
-
-- Modern C++ compiler (C++17 or later recommended)  
-- CMake build system  
-- Git  
-
-### Building
-
-```bash
-git clone https://github.com/yourusername/TraderSimPP.git
-cd TraderSimPP
-mkdir build && cd build
-cmake ..
-make
